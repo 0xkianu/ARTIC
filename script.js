@@ -82,7 +82,7 @@ async function getWorks(searchString) {
              } else {
                 imageURL = "images/No_Image_Available.jpg";
              }
-             imageCont.innerHTML += `<div class="box"><div class="body"><div class="imgContainer fancy-border"><img src="${imageURL}" alt=""></div><div class="content d-flex flex-column align-items-center justify-content-center"><div><h3 class="text-white fs-5">${imageTitle}</h3><p class="fs-6 text-white">${imageDesc}</p></div></div></div></div>`;
+             imageCont.innerHTML += `<div class="box"><div class="body"><div class="imgContainer fancy-border"><img src="${imageURL}" alt=""></div><div class="content d-flex flex-column align-items-center justify-content-center"><div><h3 class="text-white fs-6">${imageTitle}</h3><p class="text-white">${imageDesc}</p></div></div></div></div>`;
         }
 
         // Make the pagination visible
@@ -129,7 +129,7 @@ async function generateImages(searchString) {
             imageTitle = 'Untitled';
             imageDesc = `<p>artist: DALL-E</p><p>date: NA</p><p>place of origin: NA</p><p>medium: NA</p><p>style: NA</p>` 
             imageURL = `${artPieces[i].url}`;
-            imageCont.innerHTML += `<div class="box"><div class="body"><div class="imgContainer fancy-border"><img src="${imageURL}" alt=""></div><div class="content d-flex flex-column align-items-center justify-content-center"><div><h3 class="text-white fs-5">${imageTitle}</h3><p class="fs-6 text-white">${imageDesc}</p></div></div></div></div>`;
+            imageCont.innerHTML += `<div class="box"><div class="body"><div class="imgContainer fancy-border"><img src="${imageURL}" alt=""></div><div class="content d-flex flex-column align-items-center justify-content-center"><div><h3 class="text-white fs-6">${imageTitle}</h3><p class="text-white">${imageDesc}</p></div></div></div></div>`;
         }
         // Make the pagination visible
         pageNav.classList.remove("invisible");
