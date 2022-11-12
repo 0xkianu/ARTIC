@@ -114,7 +114,7 @@ async function generateImages(searchString) {
         credentials: 'same-origin', 
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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' // API key
+            'Authorization': `Bearer ${config.MY_KEY}` // API key
         },
         redirect: 'follow', 
         referrerPolicy: 'no-referrer',
