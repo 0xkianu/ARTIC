@@ -15,9 +15,10 @@ ExtraRequest
 The Art institute of Chicago wants to add more artwork to their collections. It asks the following:
 
 1. Added use of additional API, Dall-e https://beta.openai.com/docs/introduction/overviewLinks to an external site.
-    * TO USE THIS FUNCTIONALITY YOU MUST PULL FROM GITHUB, AND RUN LOCALLY.  YOU WILL ALSO NEED TO CREATE A FILE IN SAME DIRECTORY AS INDEX.HTML NAMED CONFIG.JS WITH THE FOLLOWING VARIABLE:
+    * TO USE THIS FUNCTIONALITY YOU MUST PULL FROM GITHUB, AND RUN LOCALLY.  YOU WILL ALSO NEED TO CREATE A FILE IN SAME DIRECTORY AS INDEX.HTML NAMED CONFIG.JS WITH THE FOLLOWING VARIABLE.  YOU WILL NEED TO GET YOUR OWN API KEY  FROM THE SITE:
+    
     var config = {
-	    MY_KEY: '<API KEY>'
+	    MY_KEY: 'API KEY'
     }
 
 2. Added landing page, using bootstrap, and modified the theme to my liking.
