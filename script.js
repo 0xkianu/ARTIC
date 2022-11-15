@@ -126,7 +126,7 @@ async function generateImages(searchString) {
 
         // Loop through the art pieces returned from fetch and display on the page
         for (let i = 0; i < artPieces.length; i++) {
-            imageTitle = 'Untitled';
+            imageTitle = searchString + i;
             imageDesc = `<p>artist: DALL-E</p><p>date: NA</p><p>place of origin: NA</p><p>medium: NA</p><p>style: NA</p>` 
             imageURL = `${artPieces[i].url}`;
             imageCont.innerHTML += `<div class="box"><div class="body"><div class="imgContainer fancy-border"><img src="${imageURL}" alt=""></div><div class="content d-flex flex-column align-items-center justify-content-center"><div><h3 class="text-white fs-6">${imageTitle}</h3><p class="text-white">${imageDesc}</p></div></div></div></div>`;

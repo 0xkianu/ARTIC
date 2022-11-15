@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/custom.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Art Institute of Chicago Search Page</title>
+</head>
+<body>
+  <div class="container-fluid">
+    <nav id="navbar" class="navbar navbar-light bg-light px-3 d-flex justify-content-start">
+      <a class="navbar-brand" href="#"><img class="artic-logo" src="images/Logo.jpg">  Art Institute of Chicago</a>
+      <div id="form-div">
+        <form id="search-form">
+          <div class="input-group input-group-lg">
+            <input
+              class="form-control search-bar"
+              placeholder="Enter your search"
+              name="searchTerm"
+            />
+            <button class="btn btn-primary input-group-btn" type="submit">
+              Search
+            </button>
+          </div>
+        </form>
+      </div>
+      <div id="checkbox-select" class="d-flex flex-column">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="artSelect" id="artSelect1" checked>
+          <label class="form-check-label" for="artSelect1">
+            Search artwork
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="artSelect" id="artSelect2">
+          <label class="form-check-label" for="artSelect2">
+            Generate AI artwork
+          </label>
+        </div>
+      </div>
+    </nav>
+    <div id="artworks" class="d-flex flex-row justify-content-around align-content-start flex-wrap"></div>
+      <nav aria-label="Page navigation" class="invisible" id="page-nav">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled"><button type="button" class="page-link" id="page-first">&lt;</button></li>
+          <li class="page-item disabled"><button type="button" class="page-link" id="page-prev">Previous</button></li>
+          <li class="page-item disabled"><button type="button" class="page-link" id="page-one">1</button></li>
+          <li class="page-item"><button type="button" class="page-link" id="page-two">2</button></li>
+          <li class="page-item"><button type="button" class="page-link" id="page-three">3</button></li>
+          <li class="page-item"><button type="button" class="page-link" id="page-next">Next</button></li>
+          <li class="page-item"><button type="button" class="page-link" id="page-last">&gt;</button></li>
+        </ul>
+      </nav>
+    </div>
+    <script src="config.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+    ></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -4,67 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="style.css">
-    <title>Art Institute of Chicago Search Page</title>
+    <link rel="stylesheet" href="css/custom.min.css">
+    <link rel="stylesheet" href="landing.css">
+    <title>Art Institute of Chicago</title>
 </head>
 <body>
-  <div class="container-fluid">
+  <div class="container-fluid" id="main-container">
     <nav id="navbar" class="navbar navbar-light bg-light px-3 d-flex justify-content-start">
       <a class="navbar-brand" href="#"><img class="artic-logo" src="images/Logo.jpg">  Art Institute of Chicago</a>
-      <div id="form-div">
-        <form id="search-form">
-          <div class="input-group input-group-lg">
-            <input
-              class="form-control search-bar"
-              placeholder="Enter your search"
-              name="searchTerm"
-            />
-            <button class="btn btn-primary input-group-btn" type="submit">
-              Search
-            </button>
-          </div>
-        </form>
-      </div>
-      <div id="checkbox-select" class="d-flex flex-column">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="artSelect" id="artSelect1" checked>
-          <label class="form-check-label" for="artSelect1">
-            Search artwork
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="artSelect" id="artSelect2">
-          <label class="form-check-label" for="artSelect2">
-            Generate AI artwork
-          </label>
-        </div>
-      </div>
     </nav>
-    <div id="artworks" class="d-flex flex-row justify-content-around align-content-start flex-wrap"></div>
-      <nav aria-label="Page navigation" class="invisible" id="page-nav">
-        <ul class="pagination justify-content-center">
-          <li class="page-item disabled"><button type="button" class="page-link" id="page-first">&lt;</button></li>
-          <li class="page-item disabled"><button type="button" class="page-link" id="page-prev">Previous</button></li>
-          <li class="page-item disabled"><button type="button" class="page-link" id="page-one">1</button></li>
-          <li class="page-item"><button type="button" class="page-link" id="page-two">2</button></li>
-          <li class="page-item"><button type="button" class="page-link" id="page-three">3</button></li>
-          <li class="page-item"><button type="button" class="page-link" id="page-next">Next</button></li>
-          <li class="page-item"><button type="button" class="page-link" id="page-last">&gt;</button></li>
-        </ul>
-      </nav>
+    <div id="landing-content">
     </div>
-    <script src="config.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-      crossorigin="anonymous"
-    ></script>
-    <script src="script.js"></script>
+    <div class="landing-text">
+      <h1 id="landing-header">THE COLLECTION</h1>
+      <p><h3 class="text-start lh-lg" id="content-text">Search thousands of artworks in the museum’s collection—from our renowned icons to lesser-known works from every corner of the globe—as well as our books, writings, reference materials, and other resources.  Or you can create original artwork using the built-in image generator (limit 1 generation per minute).  The image generator uses DALL·E, a 12-billion parameter neural network trained to generate images from text descriptions, using a dataset of text–image pairs. DALL-E has a diverse set of capabilities, including creating anthropomorphized versions of animals and objects, combining unrelated concepts in plausible ways, rendering text, and applying transformations to existing images.</h3></p>
+      <a href="search.html" class="btn btn-primary btn-lg" role="button">SEARCH NOW</a>
+    </div>
+  </div>
 </body>
 </html>
