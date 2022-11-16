@@ -50,6 +50,15 @@
     left: 22%;
 }
 
+#authentication {
+    position:fixed;
+    right: 2%;
+}
+
+#btn-login {
+    margin-bottom: 2px;
+}
+
 .page-link{
     font-size: 20px;
 }
