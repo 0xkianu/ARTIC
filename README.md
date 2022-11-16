@@ -25,4 +25,14 @@ The Art institute of Chicago wants to add more artwork to their collections. It 
 
 2. Added landing page, using bootstrap, and modified the theme to my liking.
 
- 
+3. Added authentication login / logout functionality using Auth0 API.
+
+----
+
+Planned Updates
+
+1. Add artworks to liked list
+
+2. Save liked artworks to user metadata tied to Auth0 authentication
+
+3. Upload liked artworks from user metadata and display on page
