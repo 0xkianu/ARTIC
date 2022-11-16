@@ -53,7 +53,7 @@ document.addEventListener('click', function(event) {
 const configureClient = async () => {
     auth0 = await createAuth0Client({
       domain: "dev-vr0ctqj811up1px7.us.auth0.com",
-      client_id: "nLBVmQO7go1ZZewUtOKjo2gGkGIilzV3",
+      client_id: "XO0wuJY6HElHJmpxVmgYN9qKxkcDFjIm",
     })
 }
 
