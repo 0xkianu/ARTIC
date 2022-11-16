@@ -26,7 +26,7 @@ The Art institute of Chicago wants to add more artwork to their collections. It 
 2. Added landing page, using bootstrap, and modified the theme to my liking.
 
 3. Added authentication login / logout functionality using Auth0 API.
-
+    * IF YOU CHOOSE TO PULL THIS REPO AND RUN LOCALLY VIA CODE RUNNER ON PORT 5500, CHANGE THE VARIABLE VALUE client_id IN THE configureClient function of script.js to value nLBVmQO7go1ZZewUtOKjo2gGkGIilzV3
 ----
 
 Planned Updates
