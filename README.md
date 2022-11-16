@@ -1,3 +1,5 @@
+https://0xkianu.github.io/ARTIC/
+
 The Art Institute of Chicago needs a new website to search their artwork. They have an api available for you to use to retrieve images: https://api.artic.edu/docsLinks to an external site.
 
 They have asked for the following to be included in the design.
