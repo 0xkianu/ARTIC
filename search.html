@@ -42,11 +42,17 @@
           </label>
         </div>
       </div>
-      <div id="authentication" class="d-flex flex-column">
-        <button class="btn btn-primary btn-sm" id="btn-login" disabled="true" onclick="login()">SIGN IN</button>
-        <button class="btn btn-primary btn-sm" id="btn-logout" disabled="true" onclick="logout()">SIGN OUT</button>
+      <div id="userAuth" class="d-flex flex-row align-content-center">
+        <div id="profile">
+          <button class="btn btn-primary btn-md invisible" id="btn-profile" onclick="showProfile()"></button>
+        </div>
+        <div id="authentication" class="d-flex flex-column">
+          <button class="btn btn-primary btn-sm" id="btn-login" disabled="true" onclick="login()">SIGN IN</button>
+          <button class="btn btn-primary btn-sm" id="btn-logout" disabled="true" onclick="logout()">SIGN OUT</button>
+        </div>
       </div>
     </nav>
+    <div class="row"><div class="col-12"><h3 class="text-center mt-4 invisible" id="liked-header">Liked Pieces</h3></div></div>
     <div id="artworks" class="d-flex flex-row justify-content-around align-content-start flex-wrap"></div>
       <nav aria-label="Page navigation" class="invisible" id="page-nav">
         <ul class="pagination justify-content-center">

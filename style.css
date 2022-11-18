@@ -50,9 +50,13 @@
     left: 22%;
 }
 
-#authentication {
+#userAuth {
     position:fixed;
     right: 2%;
+}
+
+#btn-profile {
+    margin-right: 2px;
 }
 
 #btn-login {

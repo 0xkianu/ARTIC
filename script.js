@@ -7,6 +7,8 @@ let artSearch = true;
 let auth0 = null;
 let artArray = [];
 let likedArray = [];
+let accessToken = '';
+let userAccount;
 
 /* DOM elements */
 const myForm = document.getElementById('search-form'); 
@@ -21,6 +23,8 @@ const pageFirst = document.getElementById("page-first");
 const pageLast = document.getElementById("page-last");
 const artSelect1 = document.getElementById("artSelect1");
 const artSelect2 = document.getElementById("artSelect2");
+const profile = document.getElementById("btn-profile");
+const likedHead = document.getElementById("liked-header");
 
 /* Event listener on window load */
 window.onload = async () => {
@@ -49,6 +53,17 @@ document.addEventListener('click', function(event) {
         setPageNav();
         imageCont.innerHTML='';
         getWorks(search);
+    } else if(event.target.classList.contains('btn-like')){
+        let artIndex = parseInt(event.target.dataset.index);
+        console.log(artIndex);
+        console.log(artArray[artIndex].title);
+
+        if(!(likedArray.some(function(artPiece) {
+            return (artPiece.title === artArray[artIndex].title);
+        }))) {
+            likedArray.push(artArray[artIndex]);
+            updateUserMeta();
+        }
     }
 })
 
@@ -78,18 +93,10 @@ const updateUI = async () => {
     document.getElementById("btn-login").disabled = isAuthenticated;
     document.getElementById("form-input").disabled = !isAuthenticated;
     document.getElementById("form-search-btn").disabled = !isAuthenticated;
-    // NEW - add logic to show/hide gated content after authentication
-    
-    /*if (isAuthenticated) {
-      /*document.getElementById(
-        "ipt-access-token"
-      ).innerHTML = await auth0.getTokenSilently()*/
-      /*document.getElementById("ipt-user-profile").innerHTML = JSON.stringify(
-        await auth0.getUser()
-      )*/
-    /*} else {
-      /*document.getElementById("gated-content").classList.add("hidden")*/
-    /*}*/
+    if(isAuthenticated) {
+        getUserMeta();
+        profile.classList.remove("invisible");
+    }
 }
 
 const login = async () => {
@@ -104,11 +111,77 @@ const logout = () => {
     })
 }
 
+const getUserMeta =  async () => {
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlVHYWpsRHE2Snl2NzNHNUhXTndaRSJ9.eyJpc3MiOiJodHRwczovL2Rldi12cjBjdHFqODExdXAxcHg3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJFcVRpdVU0ckgzY2pMMHJwN3d2RmNRQWt3NE1tWkxQUUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZXYtdnIwY3RxajgxMXVwMXB4Ny51cy5hdXRoMC5jb20vYXBpL3YyLyIsImlhdCI6MTY2ODY2MzMyNCwiZXhwIjoxNjY5MjY4MTI0LCJhenAiOiJFcVRpdVU0ckgzY2pMMHJwN3d2RmNRQWt3NE1tWkxQUSIsInNjb3BlIjoicmVhZDpjbGllbnRfZ3JhbnRzIGNyZWF0ZTpjbGllbnRfZ3JhbnRzIGRlbGV0ZTpjbGllbnRfZ3JhbnRzIHVwZGF0ZTpjbGllbnRfZ3JhbnRzIHJlYWQ6dXNlcnMgdXBkYXRlOnVzZXJzIGRlbGV0ZTp1c2VycyBjcmVhdGU6dXNlcnMgcmVhZDp1c2Vyc19hcHBfbWV0YWRhdGEgdXBkYXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBkZWxldGU6dXNlcnNfYXBwX21ldGFkYXRhIGNyZWF0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgcmVhZDp1c2VyX2N1c3RvbV9ibG9ja3MgY3JlYXRlOnVzZXJfY3VzdG9tX2Jsb2NrcyBkZWxldGU6dXNlcl9jdXN0b21fYmxvY2tzIGNyZWF0ZTp1c2VyX3RpY2tldHMgcmVhZDpjbGllbnRzIHVwZGF0ZTpjbGllbnRzIGRlbGV0ZTpjbGllbnRzIGNyZWF0ZTpjbGllbnRzIHJlYWQ6Y2xpZW50X2tleXMgdXBkYXRlOmNsaWVudF9rZXlzIGRlbGV0ZTpjbGllbnRfa2V5cyBjcmVhdGU6Y2xpZW50X2tleXMgcmVhZDpjb25uZWN0aW9ucyB1cGRhdGU6Y29ubmVjdGlvbnMgZGVsZXRlOmNvbm5lY3Rpb25zIGNyZWF0ZTpjb25uZWN0aW9ucyByZWFkOnJlc291cmNlX3NlcnZlcnMgdXBkYXRlOnJlc291cmNlX3NlcnZlcnMgZGVsZXRlOnJlc291cmNlX3NlcnZlcnMgY3JlYXRlOnJlc291cmNlX3NlcnZlcnMgcmVhZDpkZXZpY2VfY3JlZGVudGlhbHMgdXBkYXRlOmRldmljZV9jcmVkZW50aWFscyBkZWxldGU6ZGV2aWNlX2NyZWRlbnRpYWxzIGNyZWF0ZTpkZXZpY2VfY3JlZGVudGlhbHMgcmVhZDpydWxlcyB1cGRhdGU6cnVsZXMgZGVsZXRlOnJ1bGVzIGNyZWF0ZTpydWxlcyByZWFkOnJ1bGVzX2NvbmZpZ3MgdXBkYXRlOnJ1bGVzX2NvbmZpZ3MgZGVsZXRlOnJ1bGVzX2NvbmZpZ3MgcmVhZDpob29rcyB1cGRhdGU6aG9va3MgZGVsZXRlOmhvb2tzIGNyZWF0ZTpob29rcyByZWFkOmFjdGlvbnMgdXBkYXRlOmFjdGlvbnMgZGVsZXRlOmFjdGlvbnMgY3JlYXRlOmFjdGlvbnMgcmVhZDplbWFpbF9wcm92aWRlciB1cGRhdGU6ZW1haWxfcHJvdmlkZXIgZGVsZXRlOmVtYWlsX3Byb3ZpZGVyIGNyZWF0ZTplbWFpbF9wcm92aWRlciBibGFja2xpc3Q6dG9rZW5zIHJlYWQ6c3RhdHMgcmVhZDppbnNpZ2h0cyByZWFkOnRlbmFudF9zZXR0aW5ncyB1cGRhdGU6dGVuYW50X3NldHRpbmdzIHJlYWQ6bG9ncyByZWFkOmxvZ3NfdXNlcnMgcmVhZDpzaGllbGRzIGNyZWF0ZTpzaGllbGRzIHVwZGF0ZTpzaGllbGRzIGRlbGV0ZTpzaGllbGRzIHJlYWQ6YW5vbWFseV9ibG9ja3MgZGVsZXRlOmFub21hbHlfYmxvY2tzIHVwZGF0ZTp0cmlnZ2VycyByZWFkOnRyaWdnZXJzIHJlYWQ6Z3JhbnRzIGRlbGV0ZTpncmFudHMgcmVhZDpndWFyZGlhbl9mYWN0b3JzIHVwZGF0ZTpndWFyZGlhbl9mYWN0b3JzIHJlYWQ6Z3VhcmRpYW5fZW5yb2xsbWVudHMgZGVsZXRlOmd1YXJkaWFuX2Vucm9sbG1lbnRzIGNyZWF0ZTpndWFyZGlhbl9lbnJvbGxtZW50X3RpY2tldHMgcmVhZDp1c2VyX2lkcF90b2tlbnMgY3JlYXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgZGVsZXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgcmVhZDpjdXN0b21fZG9tYWlucyBkZWxldGU6Y3VzdG9tX2RvbWFpbnMgY3JlYXRlOmN1c3RvbV9kb21haW5zIHVwZGF0ZTpjdXN0b21fZG9tYWlucyByZWFkOmVtYWlsX3RlbXBsYXRlcyBjcmVhdGU6ZW1haWxfdGVtcGxhdGVzIHVwZGF0ZTplbWFpbF90ZW1wbGF0ZXMgcmVhZDptZmFfcG9saWNpZXMgdXBkYXRlOm1mYV9wb2xpY2llcyByZWFkOnJvbGVzIGNyZWF0ZTpyb2xlcyBkZWxldGU6cm9sZXMgdXBkYXRlOnJvbGVzIHJlYWQ6cHJvbXB0cyB1cGRhdGU6cHJvbXB0cyByZWFkOmJyYW5kaW5nIHVwZGF0ZTpicmFuZGluZyBkZWxldGU6YnJhbmRpbmcgcmVhZDpsb2dfc3RyZWFtcyBjcmVhdGU6bG9nX3N0cmVhbXMgZGVsZXRlOmxvZ19zdHJlYW1zIHVwZGF0ZTpsb2dfc3RyZWFtcyBjcmVhdGU6c2lnbmluZ19rZXlzIHJlYWQ6c2lnbmluZ19rZXlzIHVwZGF0ZTpzaWduaW5nX2tleXMgcmVhZDpsaW1pdHMgdXBkYXRlOmxpbWl0cyBjcmVhdGU6cm9sZV9tZW1iZXJzIHJlYWQ6cm9sZV9tZW1iZXJzIGRlbGV0ZTpyb2xlX21lbWJlcnMgcmVhZDplbnRpdGxlbWVudHMgcmVhZDphdHRhY2tfcHJvdGVjdGlvbiB1cGRhdGU6YXR0YWNrX3Byb3RlY3Rpb24gcmVhZDpvcmdhbml6YXRpb25zIHVwZGF0ZTpvcmdhbml6YXRpb25zIGNyZWF0ZTpvcmdhbml6YXRpb25zIGRlbGV0ZTpvcmdhbml6YXRpb25zIGNyZWF0ZTpvcmdhbml6YXRpb25fbWVtYmVycyByZWFkOm9yZ2FuaXphdGlvbl9tZW1iZXJzIGRlbGV0ZTpvcmdhbml6YXRpb25fbWVtYmVycyBjcmVhdGU6b3JnYW5pemF0aW9uX2Nvbm5lY3Rpb25zIHJlYWQ6b3JnYW5pemF0aW9uX2Nvbm5lY3Rpb25zIHVwZGF0ZTpvcmdhbml6YXRpb25fY29ubmVjdGlvbnMgZGVsZXRlOm9yZ2FuaXphdGlvbl9jb25uZWN0aW9ucyBjcmVhdGU6b3JnYW5pemF0aW9uX21lbWJlcl9yb2xlcyByZWFkOm9yZ2FuaXphdGlvbl9tZW1iZXJfcm9sZXMgZGVsZXRlOm9yZ2FuaXphdGlvbl9tZW1iZXJfcm9sZXMgY3JlYXRlOm9yZ2FuaXphdGlvbl9pbnZpdGF0aW9ucyByZWFkOm9yZ2FuaXphdGlvbl9pbnZpdGF0aW9ucyBkZWxldGU6b3JnYW5pemF0aW9uX2ludml0YXRpb25zIHJlYWQ6b3JnYW5pemF0aW9uc19zdW1tYXJ5IGNyZWF0ZTphY3Rpb25zX2xvZ19zZXNzaW9ucyIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.g2jTAACEk34hjpWa0zp6bEYOGZ1CSvGca2z1II3tywQskKyt4Y5Hdl6--qClVP7BiJswDaCUGxjaC8p6EwqH4Jz9a-ENh8HMNq60-YXsulsiNStKGgW0_80E5gCoPHHXXQtGNSQG0e1Wjo4f8sCD0_tXvWgD4EYe7114vrzt3lLwcnkAkwMspgYhSwa6vchhsTkrwYpIhM1BjuKiYIPTmgFyUcNCqRiRtg7YTTMHZOhEFqm36P4owRwqW9r7nC2bA1cibKNN9DpK_5urNsa7XFLX7IPXmdHOY2LIx4JLOVY0osGW8cFv8UZwKO1YqobChI2LKvf-IAU0f3SwVaXs7g");        
+    let requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+        
+    fetch("https://dev-vr0ctqj811up1px7.us.auth0.com/api/v2/users/auth0%7C6373c89bc3cfed678ac0bb64", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            userAccount = JSON.parse(result);
+            let profileI = userAccount.name[0];
+            profileI = profileI.toUpperCase();
+            profile.innerText = profileI;
+            if(userAccount.user_metadata.likedWorks) {
+                likedArray = userAccount.user_metadata.likedWorks;
+            }
+        })
+        .catch(error => console.log('error', error));
+}
+
+const updateUserMeta = async () => {
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlVHYWpsRHE2Snl2NzNHNUhXTndaRSJ9.eyJpc3MiOiJodHRwczovL2Rldi12cjBjdHFqODExdXAxcHg3LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJFcVRpdVU0ckgzY2pMMHJwN3d2RmNRQWt3NE1tWkxQUUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZXYtdnIwY3RxajgxMXVwMXB4Ny51cy5hdXRoMC5jb20vYXBpL3YyLyIsImlhdCI6MTY2ODY2MzMyNCwiZXhwIjoxNjY5MjY4MTI0LCJhenAiOiJFcVRpdVU0ckgzY2pMMHJwN3d2RmNRQWt3NE1tWkxQUSIsInNjb3BlIjoicmVhZDpjbGllbnRfZ3JhbnRzIGNyZWF0ZTpjbGllbnRfZ3JhbnRzIGRlbGV0ZTpjbGllbnRfZ3JhbnRzIHVwZGF0ZTpjbGllbnRfZ3JhbnRzIHJlYWQ6dXNlcnMgdXBkYXRlOnVzZXJzIGRlbGV0ZTp1c2VycyBjcmVhdGU6dXNlcnMgcmVhZDp1c2Vyc19hcHBfbWV0YWRhdGEgdXBkYXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBkZWxldGU6dXNlcnNfYXBwX21ldGFkYXRhIGNyZWF0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgcmVhZDp1c2VyX2N1c3RvbV9ibG9ja3MgY3JlYXRlOnVzZXJfY3VzdG9tX2Jsb2NrcyBkZWxldGU6dXNlcl9jdXN0b21fYmxvY2tzIGNyZWF0ZTp1c2VyX3RpY2tldHMgcmVhZDpjbGllbnRzIHVwZGF0ZTpjbGllbnRzIGRlbGV0ZTpjbGllbnRzIGNyZWF0ZTpjbGllbnRzIHJlYWQ6Y2xpZW50X2tleXMgdXBkYXRlOmNsaWVudF9rZXlzIGRlbGV0ZTpjbGllbnRfa2V5cyBjcmVhdGU6Y2xpZW50X2tleXMgcmVhZDpjb25uZWN0aW9ucyB1cGRhdGU6Y29ubmVjdGlvbnMgZGVsZXRlOmNvbm5lY3Rpb25zIGNyZWF0ZTpjb25uZWN0aW9ucyByZWFkOnJlc291cmNlX3NlcnZlcnMgdXBkYXRlOnJlc291cmNlX3NlcnZlcnMgZGVsZXRlOnJlc291cmNlX3NlcnZlcnMgY3JlYXRlOnJlc291cmNlX3NlcnZlcnMgcmVhZDpkZXZpY2VfY3JlZGVudGlhbHMgdXBkYXRlOmRldmljZV9jcmVkZW50aWFscyBkZWxldGU6ZGV2aWNlX2NyZWRlbnRpYWxzIGNyZWF0ZTpkZXZpY2VfY3JlZGVudGlhbHMgcmVhZDpydWxlcyB1cGRhdGU6cnVsZXMgZGVsZXRlOnJ1bGVzIGNyZWF0ZTpydWxlcyByZWFkOnJ1bGVzX2NvbmZpZ3MgdXBkYXRlOnJ1bGVzX2NvbmZpZ3MgZGVsZXRlOnJ1bGVzX2NvbmZpZ3MgcmVhZDpob29rcyB1cGRhdGU6aG9va3MgZGVsZXRlOmhvb2tzIGNyZWF0ZTpob29rcyByZWFkOmFjdGlvbnMgdXBkYXRlOmFjdGlvbnMgZGVsZXRlOmFjdGlvbnMgY3JlYXRlOmFjdGlvbnMgcmVhZDplbWFpbF9wcm92aWRlciB1cGRhdGU6ZW1haWxfcHJvdmlkZXIgZGVsZXRlOmVtYWlsX3Byb3ZpZGVyIGNyZWF0ZTplbWFpbF9wcm92aWRlciBibGFja2xpc3Q6dG9rZW5zIHJlYWQ6c3RhdHMgcmVhZDppbnNpZ2h0cyByZWFkOnRlbmFudF9zZXR0aW5ncyB1cGRhdGU6dGVuYW50X3NldHRpbmdzIHJlYWQ6bG9ncyByZWFkOmxvZ3NfdXNlcnMgcmVhZDpzaGllbGRzIGNyZWF0ZTpzaGllbGRzIHVwZGF0ZTpzaGllbGRzIGRlbGV0ZTpzaGllbGRzIHJlYWQ6YW5vbWFseV9ibG9ja3MgZGVsZXRlOmFub21hbHlfYmxvY2tzIHVwZGF0ZTp0cmlnZ2VycyByZWFkOnRyaWdnZXJzIHJlYWQ6Z3JhbnRzIGRlbGV0ZTpncmFudHMgcmVhZDpndWFyZGlhbl9mYWN0b3JzIHVwZGF0ZTpndWFyZGlhbl9mYWN0b3JzIHJlYWQ6Z3VhcmRpYW5fZW5yb2xsbWVudHMgZGVsZXRlOmd1YXJkaWFuX2Vucm9sbG1lbnRzIGNyZWF0ZTpndWFyZGlhbl9lbnJvbGxtZW50X3RpY2tldHMgcmVhZDp1c2VyX2lkcF90b2tlbnMgY3JlYXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgZGVsZXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgcmVhZDpjdXN0b21fZG9tYWlucyBkZWxldGU6Y3VzdG9tX2RvbWFpbnMgY3JlYXRlOmN1c3RvbV9kb21haW5zIHVwZGF0ZTpjdXN0b21fZG9tYWlucyByZWFkOmVtYWlsX3RlbXBsYXRlcyBjcmVhdGU6ZW1haWxfdGVtcGxhdGVzIHVwZGF0ZTplbWFpbF90ZW1wbGF0ZXMgcmVhZDptZmFfcG9saWNpZXMgdXBkYXRlOm1mYV9wb2xpY2llcyByZWFkOnJvbGVzIGNyZWF0ZTpyb2xlcyBkZWxldGU6cm9sZXMgdXBkYXRlOnJvbGVzIHJlYWQ6cHJvbXB0cyB1cGRhdGU6cHJvbXB0cyByZWFkOmJyYW5kaW5nIHVwZGF0ZTpicmFuZGluZyBkZWxldGU6YnJhbmRpbmcgcmVhZDpsb2dfc3RyZWFtcyBjcmVhdGU6bG9nX3N0cmVhbXMgZGVsZXRlOmxvZ19zdHJlYW1zIHVwZGF0ZTpsb2dfc3RyZWFtcyBjcmVhdGU6c2lnbmluZ19rZXlzIHJlYWQ6c2lnbmluZ19rZXlzIHVwZGF0ZTpzaWduaW5nX2tleXMgcmVhZDpsaW1pdHMgdXBkYXRlOmxpbWl0cyBjcmVhdGU6cm9sZV9tZW1iZXJzIHJlYWQ6cm9sZV9tZW1iZXJzIGRlbGV0ZTpyb2xlX21lbWJlcnMgcmVhZDplbnRpdGxlbWVudHMgcmVhZDphdHRhY2tfcHJvdGVjdGlvbiB1cGRhdGU6YXR0YWNrX3Byb3RlY3Rpb24gcmVhZDpvcmdhbml6YXRpb25zIHVwZGF0ZTpvcmdhbml6YXRpb25zIGNyZWF0ZTpvcmdhbml6YXRpb25zIGRlbGV0ZTpvcmdhbml6YXRpb25zIGNyZWF0ZTpvcmdhbml6YXRpb25fbWVtYmVycyByZWFkOm9yZ2FuaXphdGlvbl9tZW1iZXJzIGRlbGV0ZTpvcmdhbml6YXRpb25fbWVtYmVycyBjcmVhdGU6b3JnYW5pemF0aW9uX2Nvbm5lY3Rpb25zIHJlYWQ6b3JnYW5pemF0aW9uX2Nvbm5lY3Rpb25zIHVwZGF0ZTpvcmdhbml6YXRpb25fY29ubmVjdGlvbnMgZGVsZXRlOm9yZ2FuaXphdGlvbl9jb25uZWN0aW9ucyBjcmVhdGU6b3JnYW5pemF0aW9uX21lbWJlcl9yb2xlcyByZWFkOm9yZ2FuaXphdGlvbl9tZW1iZXJfcm9sZXMgZGVsZXRlOm9yZ2FuaXphdGlvbl9tZW1iZXJfcm9sZXMgY3JlYXRlOm9yZ2FuaXphdGlvbl9pbnZpdGF0aW9ucyByZWFkOm9yZ2FuaXphdGlvbl9pbnZpdGF0aW9ucyBkZWxldGU6b3JnYW5pemF0aW9uX2ludml0YXRpb25zIHJlYWQ6b3JnYW5pemF0aW9uc19zdW1tYXJ5IGNyZWF0ZTphY3Rpb25zX2xvZ19zZXNzaW9ucyIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.g2jTAACEk34hjpWa0zp6bEYOGZ1CSvGca2z1II3tywQskKyt4Y5Hdl6--qClVP7BiJswDaCUGxjaC8p6EwqH4Jz9a-ENh8HMNq60-YXsulsiNStKGgW0_80E5gCoPHHXXQtGNSQG0e1Wjo4f8sCD0_tXvWgD4EYe7114vrzt3lLwcnkAkwMspgYhSwa6vchhsTkrwYpIhM1BjuKiYIPTmgFyUcNCqRiRtg7YTTMHZOhEFqm36P4owRwqW9r7nC2bA1cibKNN9DpK_5urNsa7XFLX7IPXmdHOY2LIx4JLOVY0osGW8cFv8UZwKO1YqobChI2LKvf-IAU0f3SwVaXs7g");
+    myHeaders.append("Cookie", "did=s%3Av0%3Afb644f50-662d-11ed-8d3f-d12458b924f4.Lsxlt4Wn0nGUkEg%2FKswDsDX0jNIrSp8XKSS9gCLTJJM; did_compat=s%3Av0%3Afb644f50-662d-11ed-8d3f-d12458b924f4.Lsxlt4Wn0nGUkEg%2FKswDsDX0jNIrSp8XKSS9gCLTJJM");
+
+    let raw = JSON.stringify({
+        "user_metadata": {
+           "likedWorks": [...likedArray]
+        }
+    });
+
+    let requestOptions = {
+        method: 'PATCH',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    fetch("https://dev-vr0ctqj811up1px7.us.auth0.com/api/v2/users/auth0%7C6373c89bc3cfed678ac0bb64", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));   
+}
+
+let showProfile = () => {
+    let imageTitle,imageDesc,imageURL;
+    imageCont.innerHTML='';
+    likedHead.classList.remove("invisible");
+    pageNav.classList.add("invisible");
+    if(likedArray.length) {
+        for (let i = 0; i < likedArray.length; i++) {
+            imageTitle = likedArray[i].title;
+            imageDesc = likedArray[i].description;
+            imageURL = likedArray[i].url; 
+            imageCont.innerHTML += `<div class="box"><div class="body"><div class="imgContainer fancy-border"><img src="${imageURL}" alt=""></div><div class="content d-flex flex-column align-items-center justify-content-center"><div><h3 class="text-white fs-5">${imageTitle}</h3><p class="fs-6 text-white">${imageDesc}</p></div></div></div></div>`;
+        }
+    }
+}
+
 /* Asynchronous function for fetching ARTIC artworks from search */
 async function getWorks(searchString) {
     /* Local variables */
     let artPieces = [], imageURL, imageTitle, imageDesc, pgLimit;
+    artArray = [];
     imageCont.innerHTML='';
+    likedHead.classList.add("invisible");
 
     /* ARTIC API limits search results across pages to 1000.  1000 pieces / 16 pieces per pages ~= 63 */
     if(currPage < 63) { 
@@ -144,7 +217,8 @@ async function getWorks(searchString) {
              } else {
                 imageURL = "images/No_Image_Available.jpg";
              }
-             imageCont.innerHTML += `<div class="box"><div class="body"><div class="imgContainer fancy-border"><img src="${imageURL}" alt=""></div><div class="content d-flex flex-column align-items-center justify-content-center"><div><h3 class="text-white fs-6">${imageTitle}</h3><p class="text-white">${imageDesc}</p><button class="btn btn-secondary btn-sm" id="btn-like">LIKE</button></div></div></div></div>`;
+             artArray.push({"title":imageTitle, "url":imageURL, "description":imageDesc});
+             imageCont.innerHTML += `<div class="box"><div class="body"><div class="imgContainer fancy-border"><img src="${imageURL}" alt=""></div><div class="content d-flex flex-column align-items-center justify-content-center"><div><h3 class="text-white fs-6">${imageTitle}</h3><p class="text-white">${imageDesc}</p><button class="btn btn-secondary btn-sm btn-like" data-index="${i}">LIKE</button></div></div></div></div>`;
         }
 
         // Make the pagination visible
@@ -164,6 +238,7 @@ async function generateImages(searchString) {
     /* Local variables */
     let artPieces = [], imageURL, imageTitle, imageDesc; 
     imageCont.innerHTML='';
+    likedHead.classList.add("invisible");
     let url = 'https://api.openai.com/v1/images/generations'; // URL for DALL-E openai API
     let data = {"prompt": `${searchString}`,"n": 10,"size": "1024x1024"}; // data object parameter for search
 
